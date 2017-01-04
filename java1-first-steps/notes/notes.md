@@ -2,9 +2,14 @@
 
 ## Indice
 
-- [Introdução](#introduction)
-- [Um programa simples em Java](#a-simple-java-program)
-- [Compilando um código em Java](#compiling-java-sourcode)
+- [Introdução](#introdução)
+- [Um programa simples em Java](#um-programa-simples-em-java)
+- [Compilando um código em Java](#compilando-um-codigo-em-java)
+- [Tipos primitivos de dados](#tipos-primitivos-de-dados)
+- [Laços](#laços)
+  - [Pré e Pós incremento](#pré-e-pós-incremento)
+- [Introdução a Orientação à Objetos](#introdução-a-orientação-à-objetos)
+  - [Comparação de objetos](#comparação-de-objetos) 
 
 ## Introdução
 
@@ -123,4 +128,38 @@ int x = ++i;
 // i => 6
 // x => 6
 // Incrementa o valor antigo e retorna ele (pré incremento)
+```
+
+## Introdução a Orientação à Objetos
+
+### Comparação de objetos
+
+```java
+  MyClass object1 = new MyClass("test");
+  MyClass object2 = new MyClass("test");
+  MyClass object3 = object1;
+
+  // Comparação de referências, neste caso é falso
+  object1 == object2
+
+  // Verdadeiro
+  object1 == object3
+
+  // Equals é utilizado para comparar Strings inicialmente, para objetos complexos o médoto precisa ser ser sobrescrito
+  "waka".equals("foo")
+
+  // Sobrescevendo o método equals na classe Funcionário
+  @Override
+  public boolean equals(Object f) {
+    if(f == this) return true;
+    if(!(f instanceof Funcionario)) return false;
+
+    Funcionario ff = (Funcionario) f;
+    if(ff.getNome() != this.getNome()) return false;
+    if(ff.getDepartamento() != this.getDepartamento()) return false;
+    if(ff.getSalario() != this.getSalario()) return false;
+    if(ff.getDataEntrada().getFormatada() != this.getDataEntrada().getFormatada()) return false;
+    if(ff.getRg() != this.getRg()) return false;
+    return true;
+  }
 ```
