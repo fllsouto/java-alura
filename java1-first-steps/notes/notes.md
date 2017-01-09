@@ -4,12 +4,12 @@
 
 - [Introdução](#introdução)
 - [Um programa simples em Java](#um-programa-simples-em-java)
-- [Compilando um código em Java](#compilando-um-codigo-em-java)
+- [Compilando um código em Java](#compilando-um-código-em-java)
 - [Tipos primitivos de dados](#tipos-primitivos-de-dados)
 - [Laços](#laços)
   - [Pré e Pós incremento](#pré-e-pós-incremento)
 - [Introdução a Orientação à Objetos](#introdução-a-orientação-à-objetos)
-  - [Comparação de objetos](#comparação-de-objetos) 
+  - [Comparação de objetos](#comparação-de-objetos)
 
 ## Introdução
 
