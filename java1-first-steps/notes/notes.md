@@ -10,6 +10,9 @@
   - [Pré e Pós incremento](#pré-e-pós-incremento)
 - [Introdução a Orientação à Objetos](#introdução-a-orientação-à-objetos)
   - [Comparação de objetos](#comparação-de-objetos)
+  - [Alteradores de acesso](#alteradores-de-acesso)
+  - [Construtores](#construtores)
+  - [Atributos e métodos estáticos](#atributos-e-métodos-estáticos)
 
 ## Introdução
 
@@ -17,7 +20,7 @@ A **Sun** no começo produzia software embarcado, que rodava em diversos tipos d
 
 O Java resolve o problema de diferentes sistemas operacionais e hardwares executando o mesmo código. Isso é possível através do pseudo-código gerado pela compilação do arquivo **.java** chamado de **bytecode**. Esse **bytecode** é lido de diferentes formas, de acordo com o sistema operacional e suas implementações da **JVM (Java Virtual Machine)**.
 
-A máquina virtual é um conceito um mais alto nível do que um simples **interpretador**. Uma máquina virtual é responsável pelo gerencimento de memória, pilha de execução, threads e etc... A aplicação é executada sem que aja envolvimento direto com o sistema operacional, apenas com a JVM. Existe um total **isolamento**
+A máquina virtual é um conceito um mais alto nível do que um simples **interpretador**. Uma máquina virtual é responsável pelo gerencimento de memória, pilha de execução, threads e etc... A aplicação é executada sem que aja envolvimento direto com o sistema operacional, apenas com a JVM, isso cria um **isolamento**.
 
 ## Um programa simples em Java
 
@@ -163,3 +166,103 @@ int x = ++i;
     return true;
   }
 ```
+
+### Alteradores de acesso
+
+```java
+class Conta {
+  // Quando eu restrinjo o acesso a variável saldo para leitura isso também vale para a escrita
+  // Para manipular os dados com maior controle precisamos implementar métodos para "ler" e "escrever"
+  private double saldo;
+
+  // Definir algo como private faz com que a troca de mensagensseja reduzida e melhor controlada
+  public double pegaSaldo(){ ... }
+  public double defineSaldo(){ ... }
+
+  // Padrão do java
+  public <tipo-de-dado> set<Nome-da-variavel> {}
+  public <tipo-de-dado> get<Nome-da-variavel> {}
+}
+```
+
+Isso se chama **encapsulamento**, que consiste no controle do acesso/visibilidade de algum tipo de recurso. Caso tentemos acessar uma variável privada diretamente acontecerá um erro de compilação:
+
+```bash
+TesteFuncionario.java:117: error: nome has private access in Funcionario
+		joao.nome = "Foo";
+		    ^
+1 error
+```
+
+O **private** faz com que métodos e atributos sejam visíveis/acessáveis somente pela própria classe, enquanto que o **public** faz com que métodos e atributos sejam visíveis pela própria classe e por qualquer outra.
+
+O encapsulamento facilita a propagação de mudanças, não precisamos saber como é a implementação de um objeto, apenas confiar que seu comportamento será o que esperamos.
+
+### Construtores
+
+Usamos os contrutores para construir os objetos com os atributos que queremos, sem ter que usar uma setter para cada campo. Quando não definimos um construtor para uma classe o java atraibui um default para ela, onde nenhuma manipulação é feita. Uma classe pode ter diversos construtores, o que irá variar é apenas a assinaturado método e os tipos de dados, não pode haver redundância.
+
+**Um construtor não tem valor de retorno** e a partir do momento que eu criar meu primeiro construtor **o default deixará de existir**. Um construtor pode chamar o outro, isso evita a duplicação de código, por exemplo:
+
+```java
+// ...
+
+public Conta(int numero, double limite) {
+    this(numero, limite, 0);
+}
+
+public Conta(int numero, double limite, double saldoInicial) {
+    this.numero = numero;
+    this.limite = limite;
+    this.saldo = saldoInicial;
+}
+
+// ...
+```
+
+### Atributos e métodos estáticos
+
+Podemos compartilhar dados entre diversos objetos, como por exemplo um **contador**. Para fazer isso utilizamos o alterador **static**, como por exemplo ```private static int contador```. Essa variável irá pertencer apenas a classe, sendo global para todos os objetos. Um detalhe importante é que **métodos estáticos só enxergam métodos e recursos estáticos**.
+
+E pelo fato do atributo ser estático e privado teremos que criar um getter para ele:
+
+```java
+class Conta {
+  private static contador;
+
+  public Conta(){
+    Conta.contador = Conta.contador + 1;
+  }
+
+  public int getContador(){
+    return Conta.contador;
+  }
+
+  public static int getContador(){
+    return Conta.contador;
+  }
+}
+Conta c = new Conta();
+
+// Duas formas de obter uma conta
+c.getContador();
+Conta.getContador();
+
+// TesteFoo.java
+class Teste {
+    // Uma atributo sem alterador é de objeto por padrão
+    int x = 37;
+
+    public static void main(String[] args) {
+        System.out.println(x);
+    }
+}
+
+// Gera um problema de compilação nas referências
+TesteFoo.java:5: error: non-static variable x cannot be referenced from a static context
+        System.out.println(x);
+                           ^
+1 error
+```
+
+Um exemplo de método estático é o **main**, ele deve ser público(```public```), estático(```static```), não ter valor de retorno(```void```) e receber como parâmetros um array de strings (```String[]```).

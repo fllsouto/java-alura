@@ -30,6 +30,8 @@ class Empresa {
 		}
 		return false;
 	}
+
+
 }
 
 
@@ -59,6 +61,9 @@ class Funcionario {
 	private double salario;
 	private Data dataEntrada;
 	private String rg;
+	private int identificador;
+
+	private static int contaIdentificador = 1;
 
 	public Funcionario(String nome, String departamento, double salario, Data dataEntrada, String rg) {
 		this.nome = nome;
@@ -66,11 +71,30 @@ class Funcionario {
 		this.salario = salario;
 		this.dataEntrada = dataEntrada;
 		this.rg = rg;
+		this.identificador = Funcionario.novoIdentificador();
+	}
+
+	private static int novoIdentificador() {
+		// Pré-incremento
+		return Funcionario.contaIdentificador++;
+	}
+
+	private static int pegaIdentificador() {
+		return Funcionario.contaIdentificador;
+	}
+
+	public Funcionario(String departamento, double salario, Data dataEntrada, String rg) {
+		this("", departamento, salario, dataEntrada, rg);
+	}
+
+	public Funcionario() {
+
 	}
 
 	public String getNome() { return this.nome; }
 	public String getDepartamento() { return this.departamento; }
 	public double getSalario() { return this.salario; }
+	public void setSalario(double salario) { this.salario = salario; }
 	public Data 	getDataEntrada() { return this.dataEntrada; }
 	public String getRg() { return this.rg; }
 
@@ -88,6 +112,7 @@ class Funcionario {
 		System.out.println("Salario: " + this.salario);
 		System.out.println("Data de entrada: " + this.dataEntrada.getFormatada());
 		System.out.println("RG: " + this.rg);
+		System.out.println("ID: " + this.identificador);
 		System.out.print("\n");
 	}
 	// Sobrescrevendo um método
@@ -114,6 +139,8 @@ public class TesteFuncionario {
 		Empresa blackMesa = new Empresa("Black Mesa", "111111.24", "Fort Lauderlade Avenue, Austin, Texas", 2);
 		Funcionario fellipe = new Funcionario("Fellipe Sampaio", "Backend", 6000.0, data, "123456789");
 		Funcionario joao = new Funcionario("Joao Santos", "PO", 8000.0, data, "1234567844");
+		fellipe.mostra();
+		joao.mostra();
 		// fellipe.recebeAumento(500.0);
 		// System.out.println("Ganho anual R$: " + fellipe.calculaGanhoAnual());
 		// fellipe.mostra();
@@ -125,14 +152,14 @@ public class TesteFuncionario {
 		// } else {
 		// 	System.out.println("Diferentes");
 		// }
-		blackMesa.insereFuncionario(fellipe);
-		blackMesa.insereFuncionario(joao);
-		blackMesa.mostraFuncionarios();
-
-		if(blackMesa.contem(fellipe)) {
-			System.out.println("Contem o funcionario");
-		} else {
-			System.out.println("Não contem o funcionario");
-		}
+		// blackMesa.insereFuncionario(fellipe);
+		// blackMesa.insereFuncionario(joao);
+		// blackMesa.mostraFuncionarios();
+		//
+		// if(blackMesa.contem(fellipe)) {
+		// 	System.out.println("Contem o funcionario");
+		// } else {
+		// 	System.out.println("Não contem o funcionario");
+		// }
 	}
 }
