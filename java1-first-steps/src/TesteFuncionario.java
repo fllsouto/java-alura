@@ -30,10 +30,7 @@ class Empresa {
 		}
 		return false;
 	}
-
-
 }
-
 
 class Data {
 	private int dia;
@@ -129,7 +126,6 @@ class Funcionario {
 		if(ff.getRg() != this.getRg()) return false;
 		return true;
 	}
-
 
 }
 

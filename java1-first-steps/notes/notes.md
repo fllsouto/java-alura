@@ -20,7 +20,7 @@ A **Sun** no começo produzia software embarcado, que rodava em diversos tipos d
 
 O Java resolve o problema de diferentes sistemas operacionais e hardwares executando o mesmo código. Isso é possível através do pseudo-código gerado pela compilação do arquivo **.java** chamado de **bytecode**. Esse **bytecode** é lido de diferentes formas, de acordo com o sistema operacional e suas implementações da **JVM (Java Virtual Machine)**.
 
-A máquina virtual é um conceito um mais alto nível do que um simples **interpretador**. Uma máquina virtual é responsável pelo gerencimento de memória, pilha de execução, threads e etc... A aplicação é executada sem que aja envolvimento direto com o sistema operacional, apenas com a JVM, isso cria um **isolamento**.
+A máquina virtual é um conceito mais alto nível do que um simples **interpretador**. Uma máquina virtual é responsável pelo gerencimento de memória, pilha de execução, threads e etc... A aplicação é executada sem que aja envolvimento direto com o sistema operacional, apenas com a JVM. Existe um total **isolamento**.
 
 ## Um programa simples em Java
 
