@@ -1,6 +1,10 @@
 package src;
 
-class Conta {
+interface Tributavel {
+  double calculaTributos();
+}
+
+abstract class Conta {
   protected double saldo;
 
   public Conta(double saldo) {
@@ -22,22 +26,44 @@ class Conta {
       saldo -= valor;
     }
   }
+  public void bar() {
+    System.out.println("Conta#bar");
+    this.foo();
+  }
+  public abstract void foo();
 
-  public void atualiza(double taxa) {
-    if(taxa > 0) {
-      saldo += saldo * taxa;
-    }
+  public abstract void atualiza(double taxa);
+  // public void atualiza(double taxa) {
+  //   if(taxa > 0) {
+  //     saldo += saldo * taxa;
+  //   }
+  // }
+}
+
+class SeguroDeVida implements Tributavel {
+  public double calculaTributos() {
+    return 42;
   }
 }
 
-class ContaCorrente extends Conta {
+class ContaCorrente extends Conta implements Tributavel {
+
+  public double calculaTributos() {
+    return this.getSaldo() * 0.01;
+  }
 
   public ContaCorrente(double saldo) {
     super(saldo);
   }
 
+  @Override
   public void atualiza(double taxa) {
     this.saldo += this.saldo * taxa * 2;
+  }
+
+  @Override
+  public void foo() {
+    System.out.println("ContCorrente#foo");
   }
 }
 
@@ -47,12 +73,32 @@ class ContaPoupanca extends Conta {
     super(saldo);
   }
 
+  @Override
   public void atualiza(double taxa) {
     this.saldo += this.saldo * taxa * 3;
   }
 
+  @Override
+  public void foo() {
+    System.out.println("ContCorrentea#foo");
+  }
+
   public void deposita(double valor) {
     this.saldo += valor - 0.1;
+  }
+}
+
+class GerenciadorDeImportoDeRenda {
+  private double total;
+
+  void adiciona(Tributavel t) {
+    System.out.println("Adicionando tributavel: " + t);
+
+    this.total += t.calculaTributos();
+  }
+
+  public double getTotal() {
+    return this.total;
   }
 }
 
@@ -77,7 +123,11 @@ class AtualizadorDeContas {
 }
 public class TesteConta {
   public static void main(String[] args) {
-    Conta c = new Conta(1000.0);
+    testaTributavel();
+  }
+
+  public void testaConta() {
+    ContaCorrente c = new ContaCorrente(1000.0);
     System.out.println("Saldo R$: " + c.getSaldo());
     System.out.println("Deposito de R$: 400.0");
     c.deposita(400.0);
@@ -108,7 +158,7 @@ public class TesteConta {
     System.out.println("Saldo CPR$: " + cp.getSaldo());
 
     System.out.println("\n");
-    Conta c1 = new Conta(1000);
+    ContaCorrente c1 = new ContaCorrente(1000);
     ContaCorrente cc1 = new ContaCorrente(1000);
     ContaPoupanca cp1 = new ContaPoupanca(1000);
 
@@ -130,5 +180,19 @@ public class TesteConta {
     att.roda(cc1);
 
     System.out.println("Saldo total R$: " + att.saldoTotal());
+
+    c1.bar();
+  }
+
+  public static void testaTributavel() {
+    ContaCorrente cc = new ContaCorrente(1000);
+    System.out.println("Saldo total R$: " + cc.getSaldo());
+    System.out.println(cc.calculaTributos());
+    System.out.println("Saldo total R$: " + cc.getSaldo());
+
+    Tributavel t = cc;
+    System.out.println(t.calculaTributos());
+    System.out.println("Saldo total R$: " + t.getSaldo());
+
   }
 }
