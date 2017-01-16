@@ -8,6 +8,7 @@
   - [Polimorfismo](#polimorfismo)
 - [Classes abstratas](#classes-abstratas)
 - [Interface](#interface)
+- [Exceções](#exceções)
 
 
 ## Herança
@@ -132,3 +133,111 @@ Autenticavel a = new Gerente();
 ```
 
 Quando estamos manipulando uma interface em vez de um objeto podemos chamar apenas métodos que fazem parte da interface, para maiores exemplos ver o programa `src/TesteConta.java`. Interfaces são uma forma elegante de dimunir o acoplamento entre as classes, embora exista uma repetição adicional de código. A **Composição** pode ajudar a diminuir a redundância presente no código.
+
+## Exceções
+
+Quando nosso programa recebe algum tipo de entrada não esperada ou cai em algum caso não coberto o programa, pode acontecer uma falha. O Java dispôe de mecanismos para lidar com erros, que são conhecidas como exceções. Uma exceção é um tipo de erro que acontece durante a execução de programa, como por exemplo o acesso a uma posição de memória não definida, a chamada de um método que não existe, o timeout de espera de algum serviço, dentre outros. Para controlar uma exceção utilizamos um bloco `try ... catch`:
+
+```java
+try {
+  // Código que será executado
+} catch(<tipo da execução a ser capturada> <nome do objeto do tipo exceção>) {
+  // Tratamento da exceção
+}
+```
+Podemos ter o seguinte trecho de código:
+
+```java
+
+class Conta {
+  // ...
+
+  public Conta buscaConta(String CPF, String secretToken) throws IOException{
+    //.. Tenta buscar uma conta, caso contrário lança uma exceção
+  }
+
+  public void realizaTransação(double valor) {
+    try {
+      saque(valor)
+    } catch(RuntimeException e) {
+      System.out.println("Transação não realizada, Erro: " + e)
+    }
+  }
+
+  private void saque(double valor) {
+    if(this.saldo > valor) {
+      this.salde -= valor
+    } else {
+      throws new RuntimeException("Saldo indisponível")
+    }
+  }
+}
+
+```
+
+Neste caso estamos lançando uma nova exceção e capturando em uma função acima, entretanto alguns tipos de exceções precisam ser capturadas localmente como por exemplo `IOException`. Podemos resolver isso incluindo na assinatura do método que ele pode lançar uma exceção e delegar sua captura para estrutura acima, ou capturando em um bloco local. Esse tipo de exceção recebe o nome de **checked**, ao chamar um método ou construtor o compilador irá exigir que a exception seja tratada. Temos como exemplo o seguinte trecho:
+
+```java
+// Primeiro exemplo, não funciona
+
+class Foo {
+    public static void waka() {
+        new java.io.FileInputStream("foobar.txt");
+    }
+}
+
+/* Foo.java:3 unreported exception java.io.FileNotFoundException; must be caught or declared to be thrown
+*    new java.io.FileReader("foobar");
+* 1 error
+*/
+
+
+class Foo2 {
+  // Segundo exemplo, tratando localmente
+    public static void waka1() {
+        try {
+          new java.io.FileInputStream("foobar.txt");
+        } catch(java.io.FileNotFoundException e) {
+          System.out.println("Não foi possível abrir o arquivo para leitura!")
+        }
+    }
+
+    public static void waka1() throws java.io.FileNotFoundException{
+          new java.io.FileInputStream("foobar.txt");
+    }
+}
+
+```
+
+Podemos ter que lidar com mais de uma exceção por vez:
+
+```java
+// Assim:
+
+try {
+  //  Faz algo
+} catch(Exception1 e) {
+  // Captura 1
+} catch(Exception2 e) {
+  // Captura 2
+}
+
+// Ou assim:
+
+public void foo() throws Exception1,Exception2 {
+  // Faz algo
+}
+```
+
+Junto com o tratamento de exceções temos a palavra reservada `finally`. O bloco `finally` sempre será executado, falhando o código ou não. Ele é útil para lidar com a liberação de recursos, como conexões com banco de dados, arquivos abertos e etc.
+
+
+```java
+try {
+  // Tente executar
+} catch(Exception foo) {
+  // Se falhar
+} finally {
+  // Finalização para ambos os casos
+}
+```

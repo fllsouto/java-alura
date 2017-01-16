@@ -4,6 +4,12 @@ interface Tributavel {
   double calculaTributos();
 }
 
+class ValorInvalidoException extends Exception {
+  public ValorInvalidoException(String msg, double valor) {
+    super(msg + valor);
+  }
+}
+
 abstract class Conta {
   protected double saldo;
 
@@ -15,15 +21,19 @@ abstract class Conta {
     return saldo;
   }
 
-  public void deposita(double deposito) {
+  public void deposita(double deposito) throws ValorInvalidoException{
     if(deposito > 0) {
       saldo += deposito;
+    } else {
+      throw new ValorInvalidoException("Valor inválido para depósito R$: ", deposito);
     }
   }
 
-  public void saca(double valor) {
-    if(saldo >= valor) {
-      saldo -= valor;
+  public void saca(double saque) throws ValorInvalidoException{
+    if(saque > 0 && saque <= saldo) {
+      saldo -= saque;
+    } else {
+      throw new ValorInvalidoException("Valor inválido para saque R$: ", saque);
     }
   }
   public void bar() {
@@ -123,10 +133,20 @@ class AtualizadorDeContas {
 }
 public class TesteConta {
   public static void main(String[] args) {
-    testaTributavel();
+    testaContaException();
   }
 
-  public void testaConta() {
+  public static void testaContaException() {
+    try {
+      ContaCorrente c = new ContaCorrente(1000.0);
+      c.deposita(400.0);
+      c.saca(-500.0);
+    } catch(ValorInvalidoException e) {
+      System.out.println("Erro: " + e.getMessage());
+    }
+  }
+
+  public static void testaConta() {
     ContaCorrente c = new ContaCorrente(1000.0);
     System.out.println("Saldo R$: " + c.getSaldo());
     System.out.println("Deposito de R$: 400.0");
@@ -192,7 +212,7 @@ public class TesteConta {
 
     Tributavel t = cc;
     System.out.println(t.calculaTributos());
-    System.out.println("Saldo total R$: " + t.getSaldo());
+    // System.out.println("Saldo total R$: " + t.getSaldo());
 
   }
 }
