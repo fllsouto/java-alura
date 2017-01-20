@@ -170,6 +170,52 @@ Arrays puros tem alguns problemas:
 
 Uma alernativa para a classe Arrays está localizado no pacote `java.util` e é conhecido [**Collection Framework**](https://docs.oracle.com/javase/tutorial/collections/TOC.html). Consiste em diversas estruturas de dados para as mais diversas finalidades.
 
+![Collection Framework Hierarchy](/notes/imgs/Collection-Framework-hierarchy.png)
+[source](http://javabydeveloper.com/collection-framework-key-interfaces/)
+
 ### Listas
 
-Listas são estruturas de dados com tamanho redimensionavel, que permite elementos duplicados e que mantém a ordem de inserção.
+Listas são estruturas de dados com tamanho redimensionavel, que permite elementos duplicados e que mantém a ordem de inserção. Temos a interface `List` que define um conjunto de comportamentos para outras classes, como a `ArrayList`.
+
+```java
+// Criando uma ArrayList
+ArrayList lista = new ArrayList();
+
+// Lidando apenas com a interface List
+List lista = new ArrayList();
+
+// A lista que criamos aceita qualquer tipo de objeto por que tanto as collections quanto as lists tentam ser o mais genéricos possíveis
+List lista = new ArrayList();
+lista.add("Waka");
+lista.add("Foo");
+lista.add("Bar");
+
+// Aqui estamos pegando o elemento na posição 1. Como a lista aceita tipos genéricos receberemos um objeto da classe Object. Para manipular uma string precisamos realizar o typecasting para a classe desejada
+lista.get(1); // => Object
+String foo = (String) lista.get(1);
+
+// Usamos Generics para restringir os tipos de dados aceitos pelo ArrayList, isso evita que o typecasting seja necessário na hora de pegar um elemento da lista e limita que apenas elementos do tipo de dado delimitado poderão ser inseridos na lista
+
+List<String> lista = new ArrayList<String>();
+lista.add("Waka");
+lista.add("Foo");
+lista.add("Bar");
+
+// Aqui estamos pegando o elemento na posição 1. Como a lista aceita tipos genéricos receberemos um objeto da classe Object. Para manipular uma string precisamos realizar o typecasting para a classe desejada
+lista.get(1);
+String foo = lista.get(1);
+```
+
+Sempre é indicado trabalhar com interfaces em vez de classes, no caso de termos uma método que retorna um estrutura de dados é preferível que ele retorne a interface que ele implementa:
+
+```java
+// Não é genérico, estamos manipulando uma classe
+public ArrayList<Conta> buscaTodasAsContas() { ... }
+
+// Estamos manipulando uma interface, muito mais flexível e suscetivel a mudanças0
+public List<Conta> buscaTodasAsContas() { ... }
+```
+
+## Referências
+
+- [Collection Framework Key Interfaces](http://javabydeveloper.com/collection-framework-key-interfaces/)

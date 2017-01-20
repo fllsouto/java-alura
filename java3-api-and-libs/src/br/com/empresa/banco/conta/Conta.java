@@ -4,7 +4,7 @@ import src.br.com.empresa.banco.exception.ValorInvalidoException;
 
 public abstract class Conta {
   protected double saldo;
-  private int numero;
+  protected int numero;
   private String nomeCliente;
 
   public Conta(double saldo) {
@@ -64,7 +64,7 @@ public abstract class Conta {
 
   @Override
   public String toString() {
-    return "esse objeto é uma conta com saldo R$: " + this.saldo;
+    return "\nNúmero: " + getNumero() + "\nSaldo R$: " + this.saldo + "\n";
   }
   // public void atualiza(double taxa) {
   //   if(taxa > 0) {

@@ -1,6 +1,6 @@
 package src.br.com.empresa.banco.conta;
 
-public class ContaPoupanca extends Conta {
+public class ContaPoupanca extends Conta{
 
   public ContaPoupanca(double saldo) {
     super(saldo);
@@ -18,5 +18,12 @@ public class ContaPoupanca extends Conta {
 
   public void deposita(double valor) {
     this.saldo += valor - 0.1;
+  }
+
+  public int compareTo(ContaPoupanca outra) {
+    // if(this.getNumero() < outra.getNumero()) { return 1; }
+    // if(this.getNumero() > outra.getNumero()) { return -1; }
+    // return 0;
+    return this.getNumero() - outra.getNumero();
   }
 }

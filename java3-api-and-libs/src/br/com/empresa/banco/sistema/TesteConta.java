@@ -3,10 +3,37 @@ package src.br.com.empresa.banco.sistema;
 import src.br.com.empresa.banco.conta.*;
 import src.br.com.empresa.banco.exception.*;
 import src.br.com.empresa.banco.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 
 public class TesteConta {
   public static void main(String[] args) {
-    testaContaEquals();
+    testaArrayList();
+  }
+
+  public static void testaArrayList() {
+    ContaPoupanca c1 = new ContaPoupanca(1007.0);
+    ContaPoupanca c2 = new ContaPoupanca(1004.0);
+    ContaPoupanca c3 = new ContaPoupanca(1003.0);
+    ContaPoupanca c4 = new ContaPoupanca(1001.0);
+    c1.setNumero(003);
+    c2.setNumero(122);
+    c3.setNumero(5);
+    c4.setNumero(12);
+
+    List<ContaPoupanca> contas = new ArrayList<>();
+    contas.add(c1);
+    contas.add(c2);
+    contas.add(c3);
+    contas.add(c4);
+
+    System.out.println(contas);
+
+    Collections.sort(contas);
+
+    System.out.println(contas);
   }
 
   public static void testaContaEquals() {
