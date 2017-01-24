@@ -181,7 +181,7 @@ Arrays puros tem alguns problemas:
 
 Uma alernativa para a classe Arrays está localizado no pacote `java.util` e é conhecido [**Collection Framework**](https://docs.oracle.com/javase/tutorial/collections/TOC.html). Consiste em diversas estruturas de dados para as mais diversas finalidades.
 
-![Collection Framework Hierarchy](java3-api-and-libs/notes/imgs/Collection-Framework-hierarchy.png)
+![Collection Framework Hierarchy](http://javabydeveloper.com/wp-content/uploads/2016/06/Collection-Framework-hierarchy.png)
 [source](http://javabydeveloper.com/collection-framework-key-interfaces/)
 
 ### Listas
