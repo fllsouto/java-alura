@@ -7,10 +7,33 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TesteConta {
   public static void main(String[] args) {
-    testaArrayList();
+    testaMap();
+  }
+
+  public static void testaMap() {
+    ContaPoupanca c1 = new ContaPoupanca(1007.0);
+    ContaPoupanca c2 = new ContaPoupanca(1004.0);
+    ContaPoupanca c3 = new ContaPoupanca(1003.0);
+    ContaPoupanca c4 = new ContaPoupanca(1001.0);
+    c1.setNumero(003);
+    c2.setNumero(122);
+    c3.setNumero(5);
+    c4.setNumero(12);
+
+    Map<String, Conta> mapaDeContas =  new HashMap<String, Conta>();
+
+    mapaDeContas.put("diretor", c1);
+    mapaDeContas.put("gerente", c2);
+    mapaDeContas.put("DBA", c3);
+
+    Conta contaDiretor = mapaDeContas.get("diretor");
+    System.out.println(contaDiretor);
   }
 
   public static void testaArrayList() {
@@ -23,7 +46,8 @@ public class TesteConta {
     c3.setNumero(5);
     c4.setNumero(12);
 
-    List<ContaPoupanca> contas = new ArrayList<>();
+    // List<ContaPoupanca> contas = new ArrayList<>();
+    List<ContaPoupanca> contas = new LinkedList<>();
     contas.add(c1);
     contas.add(c2);
     contas.add(c3);
