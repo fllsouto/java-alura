@@ -216,6 +216,68 @@ public ArrayList<Conta> buscaTodasAsContas() { ... }
 public List<Conta> buscaTodasAsContas() { ... }
 ```
 
-## Referências
+### Referências
 
 - [Collection Framework Key Interfaces](http://javabydeveloper.com/collection-framework-key-interfaces/)
+
+## Threads
+
+Para executarmos partes de um programa de forma concorrente podemos recorrer a classe `Thread`, ela é responsável pela execução concorrente e paralelizada no Java. Para utiliza-la primeiros definimos definimos que nossa classe implementa a interface `Runnable`, em seguida reescrevemos o método `start`:
+
+```java
+public class GeraArquivo implements Runnable {
+  public void run() {
+    // Executa a lógica para geração do arquivo
+  }
+}
+
+public class BarraDownload implements Runnable {
+  public void run() {
+    // Executa a lógica para controle da barra de progresso
+  }
+}
+
+GeraArquivo ga = new GeraArquivo();
+BarraDownload bd = new BarraDownload();
+
+Thread t1 = new Thread(ga);
+Thread t2 = new Thread(bd);
+
+t1.start();
+t2.start();
+
+// Podemos também extender a classe Thread através de herança e usar o método start para executar o código, mas estariamos usando herança mais por preguiça do que por necessidade
+```
+
+### Execução concorrente em um processador
+
+Quando criamos diversas threads o sistema operacional, através do seu escalonador de processos, precisa escolher como dividir o uso do processador entre os processos. Esse uso está restrito a apenas alguns ciclos de máquina, e ao fim dele o escalonador precisa salvar as informações do processo que está em execução e permitir que outro entre em seu lugar. Todo esse processo recebe o nome de **troca de contexto** e é primordial para existir a multiprogramação, que é a execução concorrente de diversos processos em intervalos de tempo sobrepostos, que aos olhos do usuário da impressão que todos os programas estão sendo executados ao mesmo tempo. Neste exemplo não existe de fato **paralelismo**, por que duas instruções não podem ser executadas ao mesmo tempo.
+
+### Execução concorrente em mais de um processador
+
+Mesmo possuindo mais de uma unidade de processamento a troca de contexto ainda vai ocorrer, o número de processos é sempre superior ao de CPU's. O escalonador agora poderá escolher para qual processador ele irá atribuir um processo, além de ter trabalhar muito mais entre os ciclos.
+
+### O garbage collector
+
+O garbage collector é responsável por eliminar objetos que não estão sendo mais referenciados. Internamente ele é um Thread, portanto alterar a referência de uma estrutura não irá automaticamente apaga-la, o garbage collector precisa ser executado para poder remover dados não referenciados.
+
+### Seção crítica e métodos sincronizados
+
+Para proteger a variável da condição de corrida precisamos proteger a região que faz uso dela, a qual recebe o nome de **região crítica**. Para isso utilizamos a palavra `Synchronized`, ela cria um bloco de código sincronizado que só poderá ser executado por uma thread por vez. Caso uma outra thread tente executar o mesmo bloco, que estará fechado por uma **trava**, será barrado e ficará esperando pela liberação, podendo ser em uma fila ou não.
+
+```java
+// Qualquer objeto pode ser utilizado como trava, neste caso estamos utilizando o próprio this
+
+// Sintaxe 1
+public void metodo() {
+  synchronized(this) {
+    // Bloco sincronizado
+  }
+}
+
+// Sintaxe 2
+public synchronized void metodo() {
+  // Bloco sincronizado
+}
+
+```
