@@ -8,6 +8,17 @@
   - [A classe System](#a-classe-system)
   - [A classe String](#A-classe-string)
 - [O pacote java.io](#o-pacote-java.io)
+  - [FileInputStream e FileOutputStream](#fileInputStream-e-fileOutputStream)
+- [System.in](#system.in)
+  - [Escrita de dados](#escrita-de-dados)
+- [Collection Framework](#collection-framework)
+  - [Listas](#listas)
+  - [Referências](#referências)
+- [Threads](#threads)
+  - [Execução concorrente em um processador](#execução-concorrente-em-um-processador)
+  - [Execução concorrente em mais de um processador](#execução-concorrente-em-mais-de-um-processador)
+  - [O garbage collector](#o-garbage-collector)
+  - [Seção crítica e métodos sincronizados](#seção-crítica-e-métodos-sincronizados)
 
 
 ## Pacotes
@@ -170,7 +181,7 @@ Arrays puros tem alguns problemas:
 
 Uma alernativa para a classe Arrays está localizado no pacote `java.util` e é conhecido [**Collection Framework**](https://docs.oracle.com/javase/tutorial/collections/TOC.html). Consiste em diversas estruturas de dados para as mais diversas finalidades.
 
-![Collection Framework Hierarchy](/notes/imgs/Collection-Framework-hierarchy.png)
+![Collection Framework Hierarchy](java3-api-and-libs/notes/imgs/Collection-Framework-hierarchy.png)
 [source](http://javabydeveloper.com/collection-framework-key-interfaces/)
 
 ### Listas
@@ -219,6 +230,7 @@ public List<Conta> buscaTodasAsContas() { ... }
 ### Referências
 
 - [Collection Framework Key Interfaces](http://javabydeveloper.com/collection-framework-key-interfaces/)
+- [Grep Code](http://grepcode.com/)
 
 ## Threads
 
