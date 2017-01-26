@@ -241,3 +241,5 @@ try {
   // Finalização para ambos os casos
 }
 ```
+
+Mais referências: [Lidando com exceptions](http://blog.caelum.com.br/lidando-com-exceptions/)
