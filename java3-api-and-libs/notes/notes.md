@@ -25,7 +25,7 @@
 
 Pacotes são uma forma elegante de separar os arquivos, parecido com os diretórios que temos em um computador. Um pacote pode conter nenhum ou mais subpacotes/classes dentro dele. A Sun estabelece um padrão para nomeação de pacotes, de acordo com o nome da empresa/programador que desenvolveu a classe:
 
-```
+```java
 br.com.nomedaempresa.nomedoprojeto.subpacote1
 <!-- br.com.nomedaempresa.nomedoprojeto.subpacote2 -->
 br.com.nomedaempresa.nomedoprojeto.subpacote3.subpacote1
@@ -35,7 +35,7 @@ com.amazon.wakafoogenerator.package1
 
 A convenção é só utilizar letras minúsculas sem separação, evitando ao máximo possiveis conflitos. Podemos utilizar classes de pacotes diferentes de duas formas:
 
-```
+```java
 // Com a palavra import
 import br.com.foo.util.Banco;
 
