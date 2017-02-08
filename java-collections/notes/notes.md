@@ -3,8 +3,9 @@
 ## Indice
 
 - [Relacionamento entre coleções](#relacionamento-entre-coleções)
-- [Referencias sobre complexidade](#referencias-sobre-complexidade)
+- [Referencias sobre complexidade](#referências-sobre-complexidade)
 - [Conjuntos e Sets](#conjuntos-e-sets)
+- [Buscas e comparações com HashSets](#buscas-e-comparações-com-hashsets)
 
 ## Relacionamento entre coleções
 
@@ -83,3 +84,35 @@ System.out.println("Tamanho depois: " + alunos.size());
 // Paulo foi adicionado [2]?: false
 // Tamanho depois: 4
 ```
+
+### Buscas e comparações com HashSets
+
+O HashSet é uma estrutura muito utilizada quando estamos desenvolvendo. Ela utiliza uma tabela de espalhamento para indexar os elementos. Para procurar um elemento dentro de um HashSet precisamos sobrescrever o método `equals` e o `hashCode`.
+
+Importante mencionar que dois elementos que **são iguais possuem necessariamente o mesmo hashCode**, mas dois elementos que tem o mesmo hashCode não são necessariamente iguais:
+
+```java
+"José da Silva", RG: 332211
+  |
+  |--hashcode--> -459750397 -
+                            |
+  |--hashcode--> -459750397 ---> Objetos diferentes
+  |
+"José da Silva", RG: 332200
+
+
+.
+.
+.
+|===========|
+| 459750397 |
+|===========|
+|
+|-----> [
+  {"José da Silva", RG: 332211},
+  {"José da Silva", RG: 332200}]
+```
+
+Existe um contrato na sobrescrita do método `equals`, é boa prática reescrever também o método `hashCode` para termos um maior controle onde cada colisão irá acontecer. Podemos também utilizar a implementação do método `hashcode` da classe `String`.
+
+Referência: https://muhammadkhojaye.blogspot.com.br/2010/02/java-hashing.html
