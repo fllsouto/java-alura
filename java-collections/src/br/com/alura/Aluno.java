@@ -1,6 +1,6 @@
 package br.com.alura;
 
-public class Aluno implements Comparator<Aluno>{
+public class Aluno{
 
 	private String nome;
 	private int NumeroMatricula;
