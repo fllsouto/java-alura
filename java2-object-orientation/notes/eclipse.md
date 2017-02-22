@@ -16,6 +16,7 @@
 - **CTRL + m** : Hide menu
 - **CTRL + l** : Show all shortcuts
 - **CTRL + o** : Navigate in the class
+- **ALT + Shift + R** : Refactor
 
 ## Snippet
 
