@@ -66,8 +66,38 @@ Precisamos definir o que cada classe irá fazer e compor elas, essa composição
 
 A composição de objetos aumenta a coesão, enquanto que a delegação de tarefas diminui o acoplamento. Mas a melhor solução é juntar abstração, interfaces e polimorfismo.
 
-## Reduzindo acomplamento com interfaces e polimorfismo
+## Reduzindo acoplamento com interfaces, polimorfismo e injeção de dependências
 
 O Java tem um mecanismo através do qual podemos lidar com classes que respondem a determinados métodos. Esse mecanismo são as **interfaces** e através delas as classes podem ser manipuladas sem que seja necessário conhecer o tipo do operando, ele precisa apenas implementar os métodos definidos na interface. Isso cria uma maneira uniforme de lidar com um conjunto de objetos de classes distintas, mas que são semelhantes em determinados comportamentos.
 
 O polimorfismo permite que nosso código evolua de forma orgânica e natural. Imagine que temos as classes `Cnpj` e `Cpf`, teríamos que criar lógicas específicas para lidar com cada tipo de documento, o que poderia aumentar a replicação de código e a criação de diversos **Ifs** para identificar o tipo certo de dado e estratégia. Uma melhor abordagem é criar a interface `Documento` e apenas lidar com ela, isso flexibiliza muito mais nosso código e permite que se um novo documento for criado sua integração no sistema será feito de maneira muito mais simplificada.
+
+Utilizar muitos ifs aumenta nossa [complexidade ciclomática](https://en.wikipedia.org/wiki/Cyclomatic_complexity).
+
+Imagine que queremos gravar os dados do `BalancoEmpresa` em um banco de dados, e não mais em um HashMap. Criamos primeiro uma classe chamada `BancoDeDados`, que irá se conectar, manipular os dados e também se desconectar quando for necessário. Fazemos a criação dessa classe dentro da classe `BalancoEmpresa`, porém ela vai ter que manipular o banco de dados e cuidar da conexão dele, responsabilidades que fogem ao escopo da classe, além de que não sabemos ao certo quando devemos chamar o método `desconecta`, a classe `BalancoEmpresa` irá precisar da conexão aberta enquanto existir.
+
+Nesta situação precisamos voltar um nível na pilha de execução e fazer com que o mesmo método que manipula o `BalancoEmpresa` cuide também do banco de dados. Com isso saberemos exatamente o momento de abrir a conexão e fechar, tirando essa responsabilidade da classe de deve realizar apenas o balanço. Passaremos como argumento do construtor da classe `BalancoEmpresa` uma instância do banco de dados, estaremos assim **injetando uma dependência**, essa a qual pode ser muito mais que um simples banco de dados.
+
+Podemos criar a interface chamada `ArmazenadorDeDividas`, que irá criar um contrato sobre quais operações deverão ser feitas por uma classe que armazena dívidas. No nosso caso serão os métodos `salva` e `carrega`.
+
+```java
+public interface ArmazenadorDeDividas {
+  public void salva(Divida divida);
+  public Divida carrega(Documento documentoCredor);
+}
+```
+
+Com isso, podemos passar uma instância de um objeto que implementa a interface acima, flexibilizando e desacoplando ainda mais as estruturas:
+
+```java
+public class BalancoEmpresa {
+  private ArmazenadorDeDividas dividas;
+
+  public BalancoEmpresa(ArmazenadorDeDividas dividas) {
+    this.dividas = dividas;
+  }
+  ...
+}
+```
+
+Unindo o conceito de polimorfismo e injeção de dependência conseguimos criar sistemas mais fáceis de manter e estender.
