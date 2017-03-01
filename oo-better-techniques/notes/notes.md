@@ -13,7 +13,7 @@ Controlar o nível de encapsulamento de uma classe é uma das tarefas mais impor
 
 As mudanças na classe `Dívida` fizeram com que ela passe a ter tanto dados quanto comportamentos. A interação das outras classes com ela está seguindo a ideia do princípio conhecido como **Tell, Don't Ask**, onde falamos para uma classe o que queremos dela. Diferente do comportamento anterior, onde usavamos os estados internos de outra classe para tomarmos decisões.
 
-## Classes Coesas e Single Responsability Principle
+## Classes Coesas e Single Responsibility Principle
 
 Na nossa alteração recente a classe `Dívida` tem as seguintes responsabilidades:
 
@@ -34,7 +34,76 @@ substantivo feminino
 
 > "coesão", in Dicionário Priberam da Língua Portuguesa [em linha], 2008-2013, https://www.priberam.pt/dlpo/coes%C3%A3o [consultado em 22-02-2017].
 
-A baixa coesão dificulta o aproveitamento de código, para validar um CNPJ em qualquer parte do código eu preciso instanciar a classe Dívida.
+A baixa coesão dificulta o aproveitamento de código, para validar um CNPJ em qualquer parte do código eu preciso instanciar a classe Dívida. Para solucionar esse problema devemos quebrar as classes para aumentar a coesão nelas, podemos tomar as seguinte ações:
+
+1. Extrair o `Cnpj` para uma classe específica
+2. Criar uma classe `Pagamentos`, que é responsável por gerenciar pagamentos
+3. Associar `Pagamentos` a Dívida, e delegar para a primeira o pagamento de um valor
+4. Refatorar o `BalancoEmpresa` e `GerenciadorDeDividas`
+
+Partimos de uma classe com nenhuma responsabilidade, anêmica. Passamos a ter uma classe com mais responsabilidades do que deveria e com baixa coesão, e chegamos ao meio termo, uma classe que segue o **Single Responsibility Principle**. O reaproveitamento e manutenção das classes se tornam mais fácil, além de conseguirmos comport mais facilmente comportamentos.
+
+Considere a seguinte classe:
+
+```java
+public class RelatorioDeVendas {
+  private void conectaAoBanco() {...}
+  private String geraRelatorio() {...}
+  public void salvaParaArquivo() {...}
+  public void imprime() {...}
+}
+```
+Essa classe tem muitas responsabilidades:
+
+- Conectar ao bando de dados
+- Gerar o relatório
+- Salvar o relatório
+- Imprimir o relatório
+
+Não existem coesão nela. Seguindo o **SRP** poderiamos dividir em mais classes:
+
+```java
+class BancoDeDados {
+  void conecta() { ... }
+}
+class Impressora {
+  void imprime() { ... }
+}
+class SistemaDeArquivos {
+  void escreveNovoArquivo(String nomeDoArquivo, String texto) { ... }
+}
+class RelatórioDeVendaas {
+  void geraRelatorio() { ... }
+}
+```
+
+##  Herança e o problema do acoplamento
+
+No nosso sistema os `Pagamentos` são uma classe filha de `ArrayList`. Por causa da herança a classe filha recebe muitos métodos, como o `add(int i, Object o)`, `add(Object o)` e o `addAll(List o)`. Todos esses métodos tem uma implementação já definida na classe mãe, que nada tem haver com a classe filha. Precisamos sobrescrever esses métodos de forma que usem o método `paga`. Fazemos isso da seguinte forma:
+
+```java
+@Override
+public boolean add(Pagamento pagamento) {
+  paga(pagamento);
+  return super.add(pagamento);
+}
+```
+
+E o `addAll`:
+
+```java
+
+@Override
+public boolean addAll(Collection<? extends Pagamento> pagamentos) {
+  for (Pagamento pagamento : pagamentos) {
+    paga(pagamento);
+  }
+  return super.addAll(pagamentos);
+}
+```
+
+Chamamos o método `paga` para cada elemento da coleção recebida no método `addAll`, fazemos isso por que a classe mãe não usa o método `add` dentro do `super.addAll(pagamaneto)`. Saber esse tipo de detalhe é muito caro, estamos amarrando muito a classe filha com a mãe, isso cria o problema chamado de **Acoplamento**. Classes muito acopladas possuem muita dependência entre si, e uma simples mudança pode ser muito trabalhosa. Um exemplo disso seria alterar a classe mãe para um `HashSet`, caso queiramos que os pagamentos sejam únicos. Essa alteração quebraria a sobrescrita do médoto `addAll`, a classe mãe faz uso do método `add` dentro da chamada `super.addAll(pagamaneto)`
+
 
 ## Classes acopladas e a Lei de Demeter
 
