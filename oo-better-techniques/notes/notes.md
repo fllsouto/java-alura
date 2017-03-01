@@ -169,4 +169,19 @@ public class BalancoEmpresa {
 }
 ```
 
-Unindo o conceito de polimorfismo e injeção de dependência conseguimos criar sistemas mais fáceis de manter e estender.
+Unindo o conceito de polimorfismo e injeção de dependência conseguimos criar sistemas mais fáceis de manter e estender. Esses conceitos nos ajudam a diminuir os pontos de mudança e aumentam o nível de abstração do nosso código.
+
+```java
+// Complexidade ciclomática alta, Documento como classe concreta com diferentes tipos
+public void fazAlgo(Documento documento) {
+  if(documento.getTipo().equals("CNPJ")) { faz algo aqui... }
+    else if(documento.getTipo().equals("CPF")) { faz algo aqui... }
+    else if(documento.getTipo().equals("CHN")) { faz algo aqui... }
+}
+
+// Complexidade ciclomática baixa, Documento como interface abstrata e outras classe concretas implementam ele, podemos também delegar facilmente dessa forma
+public void fazAlgo(Documento documento) {
+  documento.fazAlgo();
+}
+
+```

@@ -1,5 +1,5 @@
 
-public class Cnpj {
+public class Cnpj implements Documento {
 	private String valor;
 
 	public Cnpj() {
@@ -9,7 +9,8 @@ public class Cnpj {
 	public Cnpj(String valor) {
 		this.valor = valor;
 	}
-	public boolean egValido() {
+	@Override
+	public boolean ehValido() {
 		return primeiroDigitoVerificador() == primeiroDigitoCorreto()
 				&& segundoDigitoVerificador() == segundoDigitoCorreto();
 	}
@@ -66,4 +67,8 @@ public class Cnpj {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return this.valor;
+	}
 }

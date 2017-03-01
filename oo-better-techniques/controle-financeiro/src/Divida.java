@@ -1,15 +1,16 @@
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 public class Divida {
 
 	private double total;
 	private String credor;
-	private Cnpj cnpjCredor = new Cnpj();
+	private Documento documentoCredor;
 	private Pagamentos pagamentos = new Pagamentos();
 
-
+	public Divida(String credor, Documento documentoCredor, double total) {
+		super();
+		this.total = total;
+		this.credor = credor;
+		this.documentoCredor = documentoCredor;
+	}
 
 	public double getTotal() {
 		return total;
@@ -26,15 +27,12 @@ public class Divida {
 	public void setCredor(String credor) {
 		this.credor = credor;
 	}
+	public Documento getDocumentoCredor() {
+		return this.documentoCredor;
+	}
 
-	public Pagamentos getPagamentos() {
-		return this.pagamentos;
-	}
-	public Cnpj getCnpjCredor() {
-		return this.cnpjCredor;
-	}
-	public void setCnpjCredor(Cnpj cnpjCredor) {
-		this.cnpjCredor = cnpjCredor;
+	public void registra(Pagamento pagamento) {
+		this.pagamentos.registra(pagamento);
 	}
 
 
