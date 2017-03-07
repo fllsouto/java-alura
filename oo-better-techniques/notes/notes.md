@@ -1,7 +1,11 @@
 # Orientação a Objetos - Melhores técnicas
 ## Indice
 
-- [Relacionamento entre coleções](#)
+- [Lógica de Negócio e Modelos Anêmicos](#lógica-de-negócio-e-modelos anêmicos)
+- [Classes Coesas e Single Responsibility Principle](#classes-coesas-e-single-responsibility-principle)
+- [Herança e o problema do acoplamento](#herança-e-o-problema-do-acoplamento)
+- [Classes acopladas e a Lei de Demeter](#classes-acopladas-e-a-lei-de-demeter)
+- [Reduzindo acoplamento com interfaces, polimorfismo e injeção de dependências](#reduzindo-acoplamento-com-interfaces,-polimorfismo-e-injeção-de-dependências)
 
 ## Lógica de Negócio e Modelos Anêmicos
 
