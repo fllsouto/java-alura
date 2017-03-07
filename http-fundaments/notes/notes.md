@@ -1,8 +1,13 @@
 # HTTP - Entendendo a Web...
+
 ## Indice
 
 - [O que é o HTTP?](#o-que-é-o-http?)
-- [A web segura - HTTPS](#a-web-segura-https)
+- [A web segura - HTTPS](#a-web-segura---https)
+- [Entendendo a Estrutura da URL](#entendendo-a-estrutura-da-url)
+- [O cliente pede e o servidor responde](#o-cliente-pede-e-o-servidor-responde)
+- [Depurando a requisição HTTP](#depurando-a-requisição-http)
+- [Métodos HTTP e parâmetros de requisição](#métodos-http-e-parâmetros-de-requisição)
 
 ## O que é o HTTP?
 
@@ -91,4 +96,4 @@ Podemos passar parâmetros em uma requisição GET através de **query-parameter
 http://www.google.com.br/?nome1=valo1&nome2=valor2...
 ```
 
-O protocolo HTTP nos orienta a usar o GET apenas para acessar dados, mas isso é totalmente arbitrário, depende unicamente da boa prática do programador. Podemos usar outros métodos como o GET no lugar que caberia melhor o REMOVE: `/vendas/remove?id=53`. 
+O protocolo HTTP nos orienta a usar o GET apenas para acessar dados, mas isso é totalmente arbitrário, depende unicamente da boa prática do programador. Podemos usar outros métodos como o GET no lugar que caberia melhor o REMOVE: `/vendas/remove?id=53`.
