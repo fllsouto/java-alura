@@ -33,3 +33,15 @@ try(Connection c = buscaConexao()) {
 ```
 
 Por padrão o JDBC funciona no modo **autoCommit**, mas podemos controlar o momento que o commit transação será realizada.
+
+Podemos criar um **pool de conexões** através da interface DataSource, que é implementado pelo vendor do banco de dados. Esse pool diminui o custo de abrir uma conexão nova com o banco de dados.
+
+## Mapeado dados em objetos: O Data Access Object
+Podemos querer transformar um objeto em um registro do banco de dados, e vice-versa. Teremos que lidar com o acesso dos dados, e esse acesso será feito da mesma forma para todas os registros. Utilizamos a técnica conhecida como **Data Access Object (DAO)**, que consiste em uma forma centralizada e unificada de lidar com os dados de um banco de dados. A maior vantagem do DAO é que ele cria uma forma uniformizada de acesso.
+
+Isolamos todo o código de acessa o repositório de dados em apenas um lugar, isso facilita a manutenção. Uma possível falha de um DAO é se cada um deles utilizar sua própria conexão com o banco de dados, isso prejudica a gestão eficiente de recursos computacionais e impossibilita o compartilhamento de uma mesma transação por diferentes DAOS.
+
+## Referências
+
+- [JDBC](http://tutorials.jenkov.com/jdbc/index.html)
+- [Java Persistence](http://tutorials.jenkov.com/java-persistence/index.html)
