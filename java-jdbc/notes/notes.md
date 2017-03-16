@@ -41,6 +41,7 @@ Podemos querer transformar um objeto em um registro do banco de dados, e vice-ve
 
 Isolamos todo o código de acessa o repositório de dados em apenas um lugar, isso facilita a manutenção. Uma possível falha de um DAO é se cada um deles utilizar sua própria conexão com o banco de dados, isso prejudica a gestão eficiente de recursos computacionais e impossibilita o compartilhamento de uma mesma transação por diferentes DAOS.
 
+Com o JDBC temos o controle fino da manipula
 ## Referências
 
 - [JDBC](http://tutorials.jenkov.com/jdbc/index.html)

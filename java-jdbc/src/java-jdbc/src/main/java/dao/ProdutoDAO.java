@@ -18,24 +18,17 @@ public class ProdutoDAO {
 		this.con = con;
 	}
 
-	public List<Produto> lista() throws SQLException  {
-		List<Produto> produtos = new ArrayList<>();
-		String sql = "select * from Produto";
-		
-		try(PreparedStatement stmt = con.prepareStatement(sql)) {
-			stmt.execute();
-			try(ResultSet rs = stmt.getResultSet()) {
-				while(rs.next()) {
-					int id = rs.getInt(1);
-					String nome = rs.getString(2);
-					String descricao = rs.getString(3);
-					produtos.add(new Produto(id, nome, descricao));
-				}
-			}
-		}
-		return produtos;
-	}
-	
+    public List<Produto> lista() throws SQLException {
+        List<Produto> produtos = new ArrayList<>();
+        String sql = "select * from Produto";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.execute();
+            transformaResultadoEmProdutos(stmt, produtos);
+        }
+        return produtos;
+    }
+
 	public void salva(Produto mesa) throws SQLException {
 		String sql = "insert into Produto (nome, descricao) values(?, ?)";
 		
@@ -55,5 +48,19 @@ public class ProdutoDAO {
 		}
 	}
 
+    private void transformaResultadoEmProdutos(PreparedStatement stmt, List<Produto> produtos)
+            throws SQLException {
+        try (ResultSet rs = stmt.getResultSet()) {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                String descricao = rs.getString("descricao");
+                Produto produto = new Produto(nome, descricao);
+                produto.setId(id);
+                produtos.add(produto);
+            }
+        }
+    }
+	
 
 }
