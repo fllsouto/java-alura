@@ -198,3 +198,249 @@ public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
     return new JpaTransactionManager(emf);
 }
 ```
+
+#### Relacionando Produtos com Preços
+
+Podemos relacionar um produto com um uma lista de preços, usando duas tabelas diferentes. Teriamos então um produto para vários preços. Entretanto não precisamos que o preço tenha Id, pois não iremos reutilizar ele. Usamos primeiro a anaotação `@ElementCollection`, que indica que esse atributo é uma coleção de elementos. Em seguida marcamos a classe que fará parte da estrutura interna, neste caso   **Preco** com a assinatura `@Embeddable`
+
+#### Adicionando dados a View
+
+Podemos utilizar o objeto do tipo ModelAndView para disponibilizar dados na View. Primeiro instanciamos o objeto passando qual view que iremos usar, em seguida adicionamos os dados dentro dela:
+
+```java
+public ModelAndView form(){
+
+    ModelAndView modelAndView = new ModelAndView("produtos/form");
+    modelAndView.addObject("tipos", TipoPreco.values());
+
+    return modelAndView;
+}
+```
+
+#### Configurando o path dos controller e o HTTP method
+
+Podemos configurar um escopo geral para um controller através da anotação `RequestMapping("path")`, acima da definição do controller. Para definir qual método HTTP um determinado método irá atender também usamos a anotação `RequestMapping(method=RequestMethod.GET)`.
+
+#### Redirect e apresentação de mensagens com Flash
+
+Após realizar um POST devemos redirecionar o usuário, isso por que o browser salva o ultimo request realizado, e caso o F5 seja apertado esse request será repetido. Para evitar isso redirecionamos o usuário ao término do post, ou melhor, respondemos o post com uma ordem de redirect. O browser irá interpretar essa ordem e disparará uma requisição de redirecionamento. Para mostrar mensagens durante este processo podemos usar o objeto **FlashScopped**, os objetos adicionados nele ficam vivos de um request para outro, enquanto o browser estiver fazendo um redirecionamento.
+
+#### Validação de dados
+
+Validar os dados recebidos de um formulário é uma importante etapa durante o processamento de uma requisição. Podemos fazer isso do lado do usuário, com Java script, mas seria passíel de ser alterado. Outra alternativa é validar do lado do servidor essas informações, e essa será nossa abordagem.
+
+A primeira validação que temos que fazer é das informações que mandamos para o servidor, para que o binding entre os parâmetros seja feito sem problemas. Por causa dessa falta de binding valores primitivos podem ficar sem ser inicializados, gerando um erro.
+
+Para fazer a validação dos dados usaremos uma especificação chamada **Bean Validation**, e sua implementação **Hibernate Validator**. Em seguida precisamos amarrar o controller com seu validador. Para isso utilizaremos um Binder:
+
+```java
+// ProdutoController.java
+// O problema aqui é que nosso ProdutoValidation precisa implementar a interface Validation
+@InitBinder
+public void InitBinder(WebDataBinder binder) {
+    binder.addValidators(new ProdutoValidation());
+}
+
+// ProdutoValidation.java
+// Neste método estamos verificando se o objeto recebido tem uma assinatura da classe Produto
+@Override
+public boolean supports(Class<?> clazz) {
+    return Produto.class.isAssignableFrom(clazz);
+}
+
+@Override
+public void validate(Object target, Errors errors) {
+    ValidationUtils.rejectIfEmpty(errors, "titulo", "field.required");
+    ValidationUtils.rejectIfEmpty(errors, "descricao", "field.required");
+
+    Produto produto = (Produto) target;
+    if(produto.getPaginas() <= 0) {
+        errors.rejectValue("paginas", "field.required");
+    }
+}
+
+// ProdutoController.java
+// No nosso controller receberemos o resultado da validação, no objeto BindingResult. Podemos verificar a existência de erros através do método
+// hasErrors. Precisamos colocar o BindingResult logo após a anotação @Valid para que o Spring consiga fazer a validação corretamente.
+@RequestMapping(method=RequestMethod.POST)
+public ModelAndView gravar(@Valid Produto produto, BindingResult result, RedirectAttributes redirectAttributes) {
+    if(result.hasErrors()) {
+        System.out.println(result.getAllErrors());
+        return form();
+    }
+    produtoDAO.gravar(produto);
+    redirectAttributes.addFlashAttribute("sucesso","Produto cadastrado com sucesso!");
+    return new ModelAndView("redirect:produtos");
+}
+```
+
+#### Apresentando erros e externalizando mensagens
+
+Podemos apresentar erros utilizando a taglib `<form:errors path="titulo" />`. O arquivo externo é um `.property` e precisa ser configurado para que o Spring manipule ele como um Bean:
+
+```java
+// AppWebConfiguration.java
+@Bean
+public MessageSource messageSource() {
+    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+    messageSource.setBasename("/WEB-INF/messages");
+    messageSource.setDefaultEncoding("UTF-8");
+    messageSource.setCacheSeconds(1);
+    return messageSource;
+}
+
+// WEB-INF/message.property
+
+// field.required = Campo é obrigatório
+// field.required.produto.titulo = O Campo título é obrigatório
+// .
+// .
+// .
+// typeMismatch = O tipo de dado foi inválido
+
+```
+
+#### Formatando datas
+
+Podemos acrescentar um campo data facilmente utilizando o Spring. Basta criar uma varáveil no modelo do tipo **Calendar** e adicionar a anotação `@DateTimeFormat`. Na classe de configuração podemos fazer uma config global que irá functionar para todas as classes que precisam usar formatação de datas:
+
+```java
+// AppWebConfiguration.java
+
+@Bean
+public FormattingConversionService mvcConversionService() {
+    DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
+    DateFormatterRegistrar formatterRegistrar = new DateFormatterRegistrar();
+    formatterRegistrar.setFormatter(new DateFormatter("dd/MM/yyyy"));
+    formatterRegistrar.registerFormatters(conversionService);
+
+    return conversionService;
+}
+```
+#### Upload de arquivos
+
+Podemos construir um formulário que faz o upload de um arquivo. O primeiro passo é adicionar ao formulário um campo de seleção de arquivos. Nosso controller precisa muda a assinatura para `public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto, ...` e o formulário precisa ser do tipo multipart.  
+
+Além disso precisamos configurar um resolver para o multipart:
+
+```java
+// AppWebConfiguration.java
+
+public MultipartResolver multipartResolver() {
+    return new StandardServletMultipartResolver();
+}
+
+// ServletSpringMVC
+@Override
+protected void customizeRegistration(Dynamic registration) {
+    registration.setMultipartConfig(new MultipartConfigElement(""));
+}
+```
+
+O Spring vai se encarregar de criar os objetos que estarão anotados com `@Autowired` para que possamos utiliza-los dentro dos nossos métodos
+
+```java
+// FileSaver.java
+
+@Component // Diz para o Spring que o FileSaver é um componente, conceito parecido com o de Bean
+public class FileSaver {
+
+    @Autowired
+    private HttpServletRequest request;
+
+    public String write(String baseFolder, MultipartFile file) {
+        try {
+            String realPath = request.getServletContext().getRealPath("/" + baseFolder);
+            System.out.println(realPath);
+            String path = realPath + "/" + file.getOriginalFilename();
+            System.out.println(path);
+            file.transferTo(new File(path));
+            return baseFolder + "/" + file.getOriginalFilename();
+
+        } catch (IllegalStateException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+// ProdutoController.java
+@RequestMapping("/produtos")
+public class ProdutosController {
+
+    @Autowired
+    private ProdutoDAO produtoDAO;
+
+    @Autowired
+    private FileSaver fileSaver;
+...
+    @RequestMapping(method=RequestMethod.POST)
+    public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto, BindingResult result, RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            System.out.println(result.getAllErrors());
+            return form(produto);
+        }
+
+        String path = fileSaver.write("arquivos-sumario", sumario);
+        produto.setSumarioPath(path);
+        System.out.println(path);
+
+        produtoDAO.gravar(produto);
+        redirectAttributes.addFlashAttribute("sucesso","Produto cadastrado com sucesso!");
+        return new ModelAndView("redirect:produtos");
+    }
+...
+}
+```
+
+Durante a execução do servidor, que está rodando com o auxílio do eclipse, a pasta que estamos usando como workspace é `~/opt/jee-neon/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/casadocodigo/arquivos-sumario`, que não necessariamente é a pasta que está o projeto. O curioso é que temos a pasta de workspace do eclipse e a pasta targe. Qual a diferença das duas?
+
+#### Servindo arquivos estáticos
+
+Para que o spring sirva arquivos estáticos, como css, js e imagens precisamos configurar na classe `AppWebConfiguration`, através do método:
+
+```java
+// Porém a classe AppWebConfiguration precisa extender a classe pai WebMvcConfigurerAdapter
+@Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+}
+
+```
+Com isso os arquivos estáticos na pasta `/resources/` serão servidos pelo Spring, essa solução se baseou neste [tutorial](http://www.baeldung.com/spring-mvc-static-resources). Usar uma estratégia de log é uma boa opção para debuggar, no meu caso utilizei o log4j para isso, baseado neste [tutorial](https://www.mkyong.com/spring-mvc/spring-mvc-log4j-integration-example/)
+
+
+#### Buscando dados com o DAO
+
+Para exibir o nosso produto e seus detalhes precisamos fazer uma, e utilizar seu id. Nossa primeira abordagem é o método:
+
+```java
+public Produto find(Integer id) {
+    return manager.find(Produto.class, id);
+}
+```
+
+O problema desse método é que apenas o Produto será carrega, não seus preços. Nossa query precisa ser customizada, de forma que as tabelas associadas com o Produto sejam carregadas também. Para isso usamos a query a seguir:
+
+```java
+public Produto find(Integer id) {
+    return manager.createQuery("select distinct(p) from Produto p join fetch p.precos precos where p.id = :id",
+            Produto.class).setParameter("id", id).getSingleResult();
+}
+```
+
+Essa query irá fazer um join entre as tabelas Produto e Preço, e a diretiva `distinct` fará com que o Hibernate não retorne valores duplicados. Por fim, pegaremos apenas um resultado, como o método `getSingleResult`.
+
+#### Urls amigaveis
+
+Podemos usar o seguinte comando `<a href="${s:mvcUrl('PC#detalhe').arg(0, produto.id).build()}">${produto.titulo}</a>` para criar um link que nos levará para a página de detalhes. No controller podemos melhorar o path e deixar com mais cara de RESTful, da seguinte forma:
+
+```java
+@RequestMapping("/detalhe/{id}")
+public ModelAndView detalhe(@PathVariable Integer id) {
+  .
+  .
+  .
+}
+```
+
+A anotação `@PathVariable` serve para informar que esse parâmetro será recebido através da Url utilizada na requisição.
