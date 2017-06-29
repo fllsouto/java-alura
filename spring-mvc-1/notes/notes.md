@@ -1,5 +1,31 @@
 ## Java Spring MVC I
 
+### Indice
+
+- [Primeiro exemplo](#primeiro-exemplo)
+- [Cadastrando produtos - Lidando com persistência de objetos](#cadastrando-produtos---lidando-com-persistencia-de-objetos)
+    * [1. Adicionar as dependências no pom.xml](#1-adicionar-as-dependencias-no-pomxml)
+    * [2. Anotar a classe que será mapeada no banco](#2-anotar-a-classe-que-sera-mapeada-no-banco)
+    * [3. Delegamos a manipulação do objeto](#3-delegamos-a-manipulacao-do-objeto)
+    * [4. Fazemos o uso do DAO no controller](#4-fazemos-o-uso-do-dao-no-controller)
+    * [5. Habilitando transações](#5-habilitando-transacoes)
+- [Retomando os estudos](#retomando-os-estudos)
+- [Relacionando Produtos com Preços](#relacionando-produtos-com-precos)
+- [Adicionando dados a View](#adicionando-dados-a-view)
+- [Configurando o path dos controller e o HTTP method](#configurando-o-path-dos-controller-e-o-http-method)
+- [Redirect e apresentação de mensagens com Flash](#redirect-e-apresentacao-de-mensagens-com-flash)
+- [Validação de dados](#validacao-de-dados)
+- [Apresentando erros e externalizando mensagens](#apresentando-erros-e-externalizando-mensagens)
+- [Formatando datas](#formatando-datas)
+- [Upload de arquivos](#upload-de-arquivos)
+- [Servindo arquivos estáticos](#servindo-arquivos-estaticos)
+- [Buscando dados com o DAO](#buscando-dados-com-o-dao)
+- [Urls amigaveis](#urls-amigaveis)
+- [Lidando com escopo de sessão](#lidando-com-escopo-de-sessao)
+- [Transformando uma classe em um Json](#transformando-uma-classe-em-um-json)
+- [Fazendo request para serviços externos](#fazendo-request-para-servicos-externos)%
+
+
 ### Primeiro exemplo
 
 - Estamos usando o [Jboss Forge](https://forge.jboss.org/download), um framework para fazer a criação e gestão do projeto Spring MVC. Esse framework utiliza o Maven para gerenciar as dependências do projeto. A vantegem de utilizar o Jboss Forge é a velocidade que podemos conseguir na criação e gerenciamento do projeto. Ele faz a geração de toda estrutura do projeto e sua integração com o Maven, ele configura as dependências, pastas e gera toda configuração envolvendo os XMLs
@@ -185,7 +211,7 @@ Precisamos criar um **TransactionManager** para auxiliar o **EntityManager**, pa
 1. Adicionar a annotation `@EnableTransactionManagement` na classe JPAConfiguration
 2. Implementar o método `public JpaTransactionManager transactionManager(EntityManagerFactory emf)`
 
-#### Retomando os estudos
+### Retomando os estudos
 
 - As classes que são controladas pelo Spring se chamam Bean
 - O Spring cuida da criação de muitos elementos no nosso sistema em tempo de execução. Isso é feito principalmente com o uso de **anotações** e **injeção de dependências**
@@ -199,11 +225,11 @@ public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
 }
 ```
 
-#### Relacionando Produtos com Preços
+### Relacionando Produtos com Preços
 
 Podemos relacionar um produto com um uma lista de preços, usando duas tabelas diferentes. Teriamos então um produto para vários preços. Entretanto não precisamos que o preço tenha Id, pois não iremos reutilizar ele. Usamos primeiro a anaotação `@ElementCollection`, que indica que esse atributo é uma coleção de elementos. Em seguida marcamos a classe que fará parte da estrutura interna, neste caso   **Preco** com a assinatura `@Embeddable`
 
-#### Adicionando dados a View
+### Adicionando dados a View
 
 Podemos utilizar o objeto do tipo ModelAndView para disponibilizar dados na View. Primeiro instanciamos o objeto passando qual view que iremos usar, em seguida adicionamos os dados dentro dela:
 
@@ -217,15 +243,15 @@ public ModelAndView form(){
 }
 ```
 
-#### Configurando o path dos controller e o HTTP method
+### Configurando o path dos controller e o HTTP method
 
 Podemos configurar um escopo geral para um controller através da anotação `RequestMapping("path")`, acima da definição do controller. Para definir qual método HTTP um determinado método irá atender também usamos a anotação `RequestMapping(method=RequestMethod.GET)`.
 
-#### Redirect e apresentação de mensagens com Flash
+### Redirect e apresentação de mensagens com Flash
 
 Após realizar um POST devemos redirecionar o usuário, isso por que o browser salva o ultimo request realizado, e caso o F5 seja apertado esse request será repetido. Para evitar isso redirecionamos o usuário ao término do post, ou melhor, respondemos o post com uma ordem de redirect. O browser irá interpretar essa ordem e disparará uma requisição de redirecionamento. Para mostrar mensagens durante este processo podemos usar o objeto **FlashScopped**, os objetos adicionados nele ficam vivos de um request para outro, enquanto o browser estiver fazendo um redirecionamento.
 
-#### Validação de dados
+### Validação de dados
 
 Validar os dados recebidos de um formulário é uma importante etapa durante o processamento de uma requisição. Podemos fazer isso do lado do usuário, com Java script, mas seria passíel de ser alterado. Outra alternativa é validar do lado do servidor essas informações, e essa será nossa abordagem.
 
@@ -274,7 +300,7 @@ public ModelAndView gravar(@Valid Produto produto, BindingResult result, Redirec
 }
 ```
 
-#### Apresentando erros e externalizando mensagens
+### Apresentando erros e externalizando mensagens
 
 Podemos apresentar erros utilizando a taglib `<form:errors path="titulo" />`. O arquivo externo é um `.property` e precisa ser configurado para que o Spring manipule ele como um Bean:
 
@@ -300,7 +326,7 @@ public MessageSource messageSource() {
 
 ```
 
-#### Formatando datas
+### Formatando datas
 
 Podemos acrescentar um campo data facilmente utilizando o Spring. Basta criar uma varáveil no modelo do tipo **Calendar** e adicionar a anotação `@DateTimeFormat`. Na classe de configuração podemos fazer uma config global que irá functionar para todas as classes que precisam usar formatação de datas:
 
@@ -317,7 +343,7 @@ public FormattingConversionService mvcConversionService() {
     return conversionService;
 }
 ```
-#### Upload de arquivos
+### Upload de arquivos
 
 Podemos construir um formulário que faz o upload de um arquivo. O primeiro passo é adicionar ao formulário um campo de seleção de arquivos. Nosso controller precisa muda a assinatura para `public ModelAndView gravar(MultipartFile sumario, @Valid Produto produto, ...` e o formulário precisa ser do tipo multipart.  
 
@@ -394,7 +420,7 @@ public class ProdutosController {
 
 Durante a execução do servidor, que está rodando com o auxílio do eclipse, a pasta que estamos usando como workspace é `~/opt/jee-neon/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/casadocodigo/arquivos-sumario`, que não necessariamente é a pasta que está o projeto. O curioso é que temos a pasta de workspace do eclipse e a pasta targe. Qual a diferença das duas?
 
-#### Servindo arquivos estáticos
+### Servindo arquivos estáticos
 
 Para que o spring sirva arquivos estáticos, como css, js e imagens precisamos configurar na classe `AppWebConfiguration`, através do método:
 
@@ -409,7 +435,7 @@ public void addResourceHandlers(ResourceHandlerRegistry registry) {
 Com isso os arquivos estáticos na pasta `/resources/` serão servidos pelo Spring, essa solução se baseou neste [tutorial](http://www.baeldung.com/spring-mvc-static-resources). Usar uma estratégia de log é uma boa opção para debuggar, no meu caso utilizei o log4j para isso, baseado neste [tutorial](https://www.mkyong.com/spring-mvc/spring-mvc-log4j-integration-example/)
 
 
-#### Buscando dados com o DAO
+### Buscando dados com o DAO
 
 Para exibir o nosso produto e seus detalhes precisamos fazer uma, e utilizar seu id. Nossa primeira abordagem é o método:
 
@@ -430,7 +456,7 @@ public Produto find(Integer id) {
 
 Essa query irá fazer um join entre as tabelas Produto e Preço, e a diretiva `distinct` fará com que o Hibernate não retorne valores duplicados. Por fim, pegaremos apenas um resultado, como o método `getSingleResult`.
 
-#### Urls amigaveis
+### Urls amigaveis
 
 Podemos usar o seguinte comando `<a href="${s:mvcUrl('PC#detalhe').arg(0, produto.id).build()}">${produto.titulo}</a>` para criar um link que nos levará para a página de detalhes. No controller podemos melhorar o path e deixar com mais cara de RESTful, da seguinte forma:
 
@@ -444,3 +470,66 @@ public ModelAndView detalhe(@PathVariable Integer id) {
 ```
 
 A anotação `@PathVariable` serve para informar que esse parâmetro será recebido através da Url utilizada na requisição.
+
+### Lidando com escopo de sessão
+
+Criamos a classe **CarrinhoCompras** e definimos ela como sendo um Bean, ou seja, uma classe que será gerenciada pelo Spring. O escopo dessa anotação é de um singleton, por default. Podemos configurar isso de maneira mais fina através da anotação `@Scope` e dos valores disponíveis na interface `WebApplicationContext`. No nosso caso o escopo terá sua duração atrelada a sessão do usuário.
+
+O devmedia tem um artigo que se aprofunda um pouco mais nesse assunto: [link](http://www.devmedia.com.br/introducao-pratica-ao-spring-framework-com-uso-de-anotacoes/27859). A maior diferença entre cada um dos escopos é:
+
+- Aplicação: Os objetos criados desde o começo da execução são singletons
+- Sessão: Cada usuário que se contecta à aplicação recebe um conjunto de objetos diferentes
+- Requisição: Os objetos tem tempo de vida igual ao tempo de vida dos requests.
+
+
+### Transformando uma classe em um Json
+
+Para validar nossa transação iremos enviar um requisição do tipo POST para uma aplicação fictícia, com o valor da compra seguindo o modelo `{ value: 500 }`. Importante resaltar que o limite de compra é até R$: 500,00 reais, caso esse valor seja ultrapassado a aplicação fictícia gerará um erro. Para converter um objeto em JSON precisamos definir um conversor, no caso um `HttpMessageConverter`. Para isso utilizaremos uma lib chamada **Jackson**. Primeiro adicionamos a sua dependência no nosso `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.5.1</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.5.1</version>
+</dependency>
+```
+
+### Fazendo request para serviços externos
+
+Muitas vezes nossas aplicações precisam interar com outras, para isso podemos utilizar o padrão de comunicação HTTP, fazendo com que o nosso servidor assuma o papel do usuário na comunicação. Para isso utilizamos  a classe `RestTemplate` junto com o métoto `postForObject`:
+
+
+```java
+@Autowired
+RestTemplate restTemplate; // Intejando a dependência
+
+public Callable<ModelAndView> finalizar(RedirectAttributes model) {
+    return () -> {
+        try {
+            String url = "http://...";
+            String response = restTemplate.postForObject(url, new DadosPagamento(carrinho.getTotal()),
+                    String.class);
+            model.addFlashAttribute("sucesso", response);
+            System.out.println(response);
+            return new ModelAndView("redirect:/produtos");
+        } catch (HttpClientErrorException e) {
+            e.printStackTrace();
+            model.addFlashAttribute("falha", "Valor maior do o permitido: V <= 500");
+            return new ModelAndView("redirect:/produtos");
+
+        }
+    };
+}
+
+// Configuramos também o Bean que irá criar o RestTemplate para nós, na classe AppWebConfiguration
+
+@Bean
+public RestTemplate restTemplate() {
+    return new RestTemplate();
+}
+```
