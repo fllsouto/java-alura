@@ -23,7 +23,7 @@
 - [Urls amigaveis](#urls-amigaveis)
 - [Lidando com escopo de sessão](#lidando-com-escopo-de-sessao)
 - [Transformando uma classe em um Json](#transformando-uma-classe-em-um-json)
-- [Fazendo request para serviços externos](#fazendo-request-para-servicos-externos)%
+- [Fazendo request para serviços externos](#fazendo-request-para-servicos-externos)
 
 
 ### Primeiro exemplo
