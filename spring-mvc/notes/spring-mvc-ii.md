@@ -193,4 +193,29 @@ insert into Usuario (email, nome, senha) values ('admin@casadocodigo.com.br', 'A
 insert into Usuario_Role(Usuario_email, roles_nome) values ('admin@casadocodigo.com.br', 'ROLE_ADMIN');
 ```
 
-Travado no problema do spring security e o ant
+Vamos analisar o controle de acesso das rotas, feito na classe `SecurityConfiguration`:
+
+```java
+protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests() //Vai definir que o acesso é restrito e definido através das regras do HttpServletRequest
+    .antMatchers("/produtos/form").hasRole("ADMIN") // Restringe  para que apenas administradores acessem o formulário de produtos através de qualquer método HTTP
+    .antMatchers("/carrinho/**").permitAll() // Permite que qualquer usuário acesse o carrinho e as páginas abaixo dela
+    .antMatchers(HttpMethod.POST, "/produtos").hasRole("ADMIN") // Restringe  para que apenas administradores acessem a lista de produtos através do método HTTP#POST
+    .antMatchers(HttpMethod.GET, "/produtos").hasRole("ADMIN") // Restringe  para que apenas administradores acessem a lista de produtos através do método HTTP#GET
+    .antMatchers("/produtos/**").permitAll() // Permite que os usuários acessem acessem a lista de produtos através do de qualquer método HTTP, excluindo os que estão bloqueados
+    .anyRequest().authenticated() // Diz que qualquer request, excluindo os definidos anteriormente, devem ser autenticados
+    .and().formLogin(); // Diz que a autenticação será através de um formulário
+}
+
+// Um outro exemplo está presente no método HttpSecurity#authorizeRequests
+
+http.authorizeRequests()
+  .antMatchers("/admin/**").hasRole("ADMIN") // Os matchers são definidos em ordem, aqui primeiro definimos o path /admin/**
+  .antMatchers("/**").hasRole("USER") // Em seguida definimos todos os paths restantes que não foram definidos
+  .and().formLogin();
+
+http.authorizeRequests()
+  .antMatchers("/**").hasRole("USER") // Neste caso estamos mapeando todos os paths de uma vez
+  .antMatchers("/admin/**").hasRole("ADMIN") // Por conta disso este segundo mapeamento nunca irá acontecer
+
+```
