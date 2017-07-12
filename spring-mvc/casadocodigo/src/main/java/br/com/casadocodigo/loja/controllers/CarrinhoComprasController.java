@@ -1,6 +1,5 @@
 package br.com.casadocodigo.loja.controllers;
 
-import org.omg.CORBA.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
