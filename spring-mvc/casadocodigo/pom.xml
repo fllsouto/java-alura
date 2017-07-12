@@ -130,14 +130,14 @@
 			<version>18.0</version>
 		</dependency>
 
- 		<dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>4.3.9.RELEASE</version>
 		</dependency>
 
 
-<!--		<dependency>
+		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>4.2.3.RELEASE</version>
@@ -158,7 +158,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>4.2.3.RELEASE</version>
-		</dependency> -->
+		</dependency>
 	</dependencies>
 
 </project>
