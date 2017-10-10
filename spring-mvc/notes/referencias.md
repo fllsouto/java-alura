@@ -1,0 +1,18 @@
+## Referëncias
+
+- [Spring Framework Reference](http://docs.spring.io/spring/docs/current/spring-framework-reference/html)
+- [What is Dispatcher Servlet in Spring?](https://stackoverflow.com/questions/2769467/what-is-dispatcher-servlet-in-spring)
+- [Core J2EE Patterns - Front Controller](http://www.oracle.com/technetwork/java/frontcontroller-135648.html)
+- [How Spring MVC Works](http://jeromejaglale.com/doc/spring4_tutorial/mvc_web_application)
+- [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
+- [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
+- [How to properly do dependency injection (in Spring)](https://stackoverflow.com/questions/24337486/how-to-properly-do-dependency-injection-in-spring/24363707#24363707)
+- [Open Closed Principle](https://springframework.guru/principles-of-object-oriented-design/open-closed-principle/)
+- [The Open/Closed Principle Dojo](https://www.slideshare.net/xpmatteo/20101125-ocpxpday)
+- [Open closed Principle Kata](Open Closed Principle kata)
+- [DispatcherServlet](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html)
+- [O que é um Bean](https://pt.stackoverflow.com/questions/22444/o-que-%C3%A9-e-para-que-serve-um-java-bean)
+- [Qual a diferença entre um Pojo e um Bean?](https://pt.stackoverflow.com/questions/22607/qual-a-diferen%C3%A7a-entre-javabean-e-pojo?noredirect=1&lq=1)
+- [Por que annotations são úteis?](https://pt.stackoverflow.com/questions/17499/o-qu%C3%A3o-%C3%BAteis-s%C3%A3o-as-annotations-em-java/17531#17531)
+- [How do I Learn Spring Framework?](https://www.quora.com/How-do-I-learn-Spring-Framework)
+- [Docker for Java developers](https://github.com/docker/labs/tree/master/developer-tools/java)

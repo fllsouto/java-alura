@@ -1,6 +1,7 @@
 package br.com.casadocodigo.loja.models;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class Produto {
 
     private String sumarioPath;
     
+    @ElementCollection
+    private List<Preco> precos =  new ArrayList();
+
     public String getSumarioPath() {
         return sumarioPath;
     }
@@ -44,8 +48,6 @@ public class Produto {
     public void setDataLancamento(Calendar dataLancamento) {
         this.dataLancamento = dataLancamento;
     }
-    @ElementCollection
-    private List<Preco> precos;
 
     public List<Preco> getPrecos() {
         return precos;

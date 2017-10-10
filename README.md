@@ -7,7 +7,7 @@ In this repo I will keep my annotations and codes about Java Alura's course
 ### Carrers
 
 - [x] [Desenvolvedor Java Junior](https://cursos.alura.com.br/career/desenvolvedor-java-junior)
-- [x] [Desenvolvedor Java Junior](https://cursos.alura.com.br/career/desenvolvedor-java-junior-web)
+- [x] [Desenvolvedor Java Web Junior](https://cursos.alura.com.br/career/desenvolvedor-java-junior-web)
 - [ ] [Desenvolvedor Java Web Spring](https://cursos.alura.com.br/career/desenvolvedor-java-web-spring)
 - [ ] [Expert orientação a Objetos](https://cursos.alura.com.br/career/expert-orientacao-a-objetos)
 
@@ -26,7 +26,7 @@ In this repo I will keep my annotations and codes about Java Alura's course
 
 - [x] [Java 8](https://cursos.alura.com.br/course/java8-lambdas)
 - [ ] [Maven](https://cursos.alura.com.br/course/maven-build-do-zero-a-web)
-- [ ] [Maven](https://cursos.alura.com.br/course/reflection-em-java)
+- [ ] [Reflections em Java](https://cursos.alura.com.br/course/reflection-em-java)
 
 #### Web
 

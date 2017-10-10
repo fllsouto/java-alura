@@ -217,5 +217,148 @@ http.authorizeRequests()
 http.authorizeRequests()
   .antMatchers("/**").hasRole("USER") // Neste caso estamos mapeando todos os paths de uma vez
   .antMatchers("/admin/**").hasRole("ADMIN") // Por conta disso este segundo mapeamento nunca irá acontecer
-
 ```
+
+Fazer o spring security funcionar é passível de falhas, para evitar isso faça com baby steps e sempre teste a cada nova adição.
+
+Para adicionar uma camada de segurança para proteger de ataques de **CSRF** podemos usar a tag `<form:form>..</form:form>` que irá incluir um csrf token para nós.
+
+### Usando arquivos externos de Template
+
+Podemos quebrar nossa view em diversos arquivos externos, isso facilita a reutilização e manutenção do código. Esse processo pode ser feito seguindo esses passos:
+
+1. Copiamos o trecho de código que será reutilizado para um arquivo externo
+2. utilizamos a tag `<%@ inculde file="..." %>` para incluir nosso arquivo **.JSP**
+
+O grande problema dessa solução é ter que lembrar de fazer esses inumeros includes. Podemos resolver isso criando um template, que nada mais é do que uma estrutura básica que já está pronto e está só esperando a inclusão do seu miolo.
+
+A criação de templates, bem como de tags, segue uma específicação que deve ser respeitada. A seguir temos um exemplo de template:
+
+```html
+<%@ tag language="java" pageEncoding="ISO-8859-1"%>
+<%@ attribute name="titulo" required="true" %> // Aqui estamos definindo que cada view deve definir essa variável, caso isso não aconteça um erro será lançado
+<%@ attribute name="bodyClass" required="false" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>${titulo} - Casa do Código</title>
+    .
+    .
+    .
+</head>
+<body>
+
+    <%@ include file="/WEB-INF/views/cabecalho.jsp" %>
+
+    <jsp:doBody />
+
+    <%@ include file="/WEB-INF/views/rodape.jsp" %>
+
+</body>
+</html>
+```
+
+Podemos também usar fragments no nosso template, que nada mais são do que pedaços de script que executarão alguma função específica. Para usar fragments temos que seguir a seguinte estrutura:
+
+```html
+...
+<%@ attribute name="extraScripts" fragment="true"%>
+<!DOCTYPE html>
+<html>
+  <head>
+...  
+  <body>
+
+      <%@ include file="/WEB-INF/views/cabecalho.jsp" %>
+
+      <jsp:doBody />
+      <jsp:invoke fragment="extraScripts"></jsp:invoke>
+
+      <%@ include file="/WEB-INF/views/rodape.jsp" %>
+
+  </body>
+</html>
+
+
+// Temos que envolver o conteúdo e o script entre tags específicas
+<tags:pageTemplate titulo="xxx">
+
+	<jsp:attribute name="extraScripts">...</jsp:attribute>
+	<jsp:body> ...</jsp:body>
+</tags:pageTemplate >
+```
+
+### Testando a aplicação
+
+Podemos escrever testes automatizados para nossas classes. Através deles podemos assegurar que nossa aplicação continuará funcionando a medida que adicionemos novas funcionalidades. Nosso objetivo será escrever um teste de unidade para um método implementado na classe ProdutoDAO:
+
+```java
+// ProdutoDAO
+
+public BigDecimal somaPrecosPorTupe(TipoPreco tipoPreco) {
+    TypedQuery<BigDecimal> query = manager.createQuery("select sum(preco.valor) from Produto p join p.precos preco where preco.tipo = :tipoPreco", BigDecimal.class);
+    query.setParameter("tipoPreco", tipoPreco);
+    return query.getSingleResult();
+}
+
+// ProdutoBuilder
+...
+public class ProdutoBuilder {
+
+    private List<Produto> produtos = new ArrayList<>();
+
+    private ProdutoBuilder(Produto produto) {
+        produtos.add(produto);
+    }
+
+    public static ProdutoBuilder newProduto(TipoPreco tipoPreco, BigDecimal valor) {
+        Produto livro = create("livro 1", tipoPreco, valor);
+        return new ProdutoBuilder(livro);
+    }
+
+    public static ProdutoBuilder newProduto() {
+        Produto livro = create("livro 1", TipoPreco.COMBO, BigDecimal.TEN);
+        return new ProdutoBuilder(livro);
+    }
+
+    private static Produto create(String nomeLivro, TipoPreco tipoPreco, BigDecimal valor) {
+        Produto livro = new Produto();
+        livro.setTitulo(nomeLivro);
+        livro.setDataLancamento(Calendar.getInstance());
+        livro.setPaginas(150);
+        livro.setDescricao("Livro top sobre testes");
+        Preco preco = new Preco();
+        preco.setTipo(tipoPreco);
+        preco.setValor(valor);
+        livro.getPrecos().add(preco);
+        return livro;
+    }
+
+    public ProdutoBuilder more(int number) {
+        Produto base = produtos.get(0);
+        Preco preco = base.getPrecos().get(0);
+        for (int i = 0; i < number; i++) {
+            produtos.add(create("Book " + i, preco.getTipo(), preco.getValor()));
+        }
+        return this;
+    }
+
+    public Produto buildOne() {
+        return produtos.get(0);
+    }
+
+    public List<Produto> buildAll() {
+        return produtos;
+    }
+}
+```
+
+Também usamos um **Builder** para construir uma série de objetos para nos ajudar a testar. Um problema que teremos ao testar a classe ProdutoDAO é que o `EntityManager` utilizado por ela é criado **apenas dentro do contexto do Spring**, por causa dessa dependência teriamos que "simular" esse contexto apenas para testar nossa classe, algo que envolve muita complexidade desnecessária. Para resolver isso faremos uso do SpringTest, aliado a duas anotações `@RunWith` e `@ContextConfiguration`. Então, declaramos o nosso `produtoDAO` como uma dependência que será injetada pela Spring através do Autowired.
+
+Se executarmos o teste receberemos um erro. Isso acontece por que estamos usando o mesmo banco de desenvolvimento, precisamos ter um banco específico para testes, de forma que ele seja limpo a cada nova execução, isso evita que dados desconhecidos influenciem nossos testes.
+
+Teremos que separar as execuções em profiles diferentes, isso garante que o chaveamento entre bancos ocorra corretamente.
